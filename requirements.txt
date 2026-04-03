@@ -1,0 +1,6 @@
+tensorflow==2.19.0
+fastapi
+uvicorn
+pillow
+opencv-python
+numpy
