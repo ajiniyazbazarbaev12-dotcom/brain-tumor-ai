@@ -1,4 +1,9 @@
 from fastapi import FastAPI, UploadFile, File, Form
+from contextlib import asynccontextmanager
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    download_models()  # runs on startup
+    yield
 from app.services.brain_detector import detect_brain_mri
 from app.services.tumor_predictor import predict_tumor
 from app.database.db import init_db, get_connection
@@ -7,13 +12,8 @@ from enum import Enum
 import uuid
 import os
 
-from contextlib import asynccontextmanager
 from app.models.download_models import download_models
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    download_models()  # runs on startup
-    yield
 app = FastAPI(title="Brain Tumor Detection API", lifespan=lifespan)
 
 # create feedback folder
