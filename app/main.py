@@ -1,20 +1,17 @@
+from app.models.download_models import download_models
+
+# ✅ DOWNLOAD FIRST (CRITICAL)
+download_models()
+
 from fastapi import FastAPI, UploadFile, File, Form
-from contextlib import asynccontextmanager
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    download_models()  # runs on startup
-    yield
 from app.services.brain_detector import detect_brain_mri
 from app.services.tumor_predictor import predict_tumor
 from app.database.db import init_db, get_connection
 from enum import Enum
-
 import uuid
 import os
 
-from app.models.download_models import download_models
-
-app = FastAPI(title="Brain Tumor Detection API", lifespan=lifespan)
+app = FastAPI(title="Brain Tumor Detection API")
 
 # create feedback folder
 FEEDBACK_DIR = "app/feedback"
@@ -22,6 +19,7 @@ os.makedirs(FEEDBACK_DIR, exist_ok=True)
 
 # init DB
 init_db()
+
 
 class TumorType(str, Enum):
     glioma = "glioma"
@@ -39,6 +37,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def root():
@@ -100,12 +99,12 @@ async def feedback(
 
     return {"status": "saved"}
 
+
 @app.delete("/feedback/{id}")
 def delete_feedback(id: int):
     conn = get_connection()
     cursor = conn.cursor()
 
-    # get image path first
     cursor.execute("SELECT image_path FROM feedback WHERE id=?", (id,))
     row = cursor.fetchone()
 
@@ -115,16 +114,15 @@ def delete_feedback(id: int):
 
     image_path = row[0]
 
-    # delete image if exists
     if os.path.exists(image_path):
         os.remove(image_path)
 
-    # delete DB record
     cursor.execute("DELETE FROM feedback WHERE id=?", (id,))
     conn.commit()
     conn.close()
 
     return {"status": "deleted"}
+
 
 @app.get("/feedback")
 def get_feedback():
