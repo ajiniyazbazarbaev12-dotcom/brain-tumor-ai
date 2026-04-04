@@ -2,15 +2,11 @@ import numpy as np
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, BatchNormalization
 from tensorflow.keras.models import Model
-
 from app.utils.image_preprocessing import preprocess_image
-from app.models.download_models import download_models
-
-download_models()
 
 def build_tumor_model():
     base_model = ResNet50(
-        weights=None,  # IMPORTANT
+        weights="imagenet",
         include_top=False,
         input_shape=(224, 224, 3)
     )
@@ -19,7 +15,7 @@ def build_tumor_model():
     x = GlobalAveragePooling2D()(x)
     x = BatchNormalization()(x)
     x = Dense(256, activation="relu")(x)
-    x = Dropout(0.5)(x)
+    x = Dropout(0.6)(x)
     x = Dense(128, activation="relu")(x)
     outputs = Dense(4, activation="softmax")(x)
 
