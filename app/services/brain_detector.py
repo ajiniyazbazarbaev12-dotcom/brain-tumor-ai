@@ -3,6 +3,8 @@ from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, Batc
 from tensorflow.keras.models import Model
 from app.utils.image_preprocessing import preprocess_image
 
+model = None
+
 def build_mri_model():
     base_model = ResNet50(
         weights=None,
@@ -20,18 +22,23 @@ def build_mri_model():
     model = Model(inputs=base_model.input, outputs=output)
     return model
 
+def get_model():
+    global model
+    if model is None:
+        model = build_mri_model()
+        model.load_weights("app/models/mri_detector.weights.h5")
+    return model
 
-# build + load weights
-model = build_mri_model()
-model.load_weights("app/models/mri_detector.weights.h5")
 
 LOW_THRESHOLD = 0.2
 HIGH_THRESHOLD = 0.8
 
+
 def detect_brain_mri(file):
+    model_instance = get_model()
     img = preprocess_image(file)
 
-    prediction = model.predict(img)[0][0]
+    prediction = model_instance.predict(img)[0][0]
 
     if prediction < LOW_THRESHOLD:
         return {
@@ -48,5 +55,5 @@ def detect_brain_mri(file):
     else:
         return {
             "status": "uncertain",
-            "confidence": float(max(prediction, 1-prediction))
+            "confidence": float(max(prediction, 1 - prediction))
         }

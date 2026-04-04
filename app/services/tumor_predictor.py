@@ -4,6 +4,8 @@ from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, Batc
 from tensorflow.keras.models import Model
 from app.utils.image_preprocessing import preprocess_image
 
+model = None
+
 def build_tumor_model():
     base_model = ResNet50(
         weights=None,
@@ -23,18 +25,23 @@ def build_tumor_model():
     return model
 
 
-# build + load weights
-model = build_tumor_model()
-model.load_weights("app/models/brain_tumor.weights.h5")
+def get_model():
+    global model
+    if model is None:
+        model = build_tumor_model()
+        model.load_weights("app/models/brain_tumor.weights.h5")
+    return model
 
 
 CLASSES = ['glioma', 'meningioma', 'notumor', 'pituitary']
 
 
 def predict_tumor(file):
+    model_instance = get_model()
+
     img = preprocess_image(file)
 
-    prediction = model.predict(img)[0]
+    prediction = model_instance.predict(img)[0]
     class_index = np.argmax(prediction)
 
     return {
