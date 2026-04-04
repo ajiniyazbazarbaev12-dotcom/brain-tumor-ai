@@ -7,7 +7,14 @@ from enum import Enum
 import uuid
 import os
 
-app = FastAPI(title="Brain Tumor Detection API")
+from contextlib import asynccontextmanager
+from app.models.download_models import download_models
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    download_models()  # runs on startup
+    yield
+app = FastAPI(title="Brain Tumor Detection API", lifespan=lifespan)
 
 # create feedback folder
 FEEDBACK_DIR = "app/feedback"
