@@ -37,14 +37,18 @@ CLASSES = ['glioma', 'meningioma', 'notumor', 'pituitary']
 
 
 def predict_tumor(file):
-    model_instance = get_model()
+    try:
+        model_instance = get_model()
+        img = preprocess_image(file)
 
-    img = preprocess_image(file)
+        prediction = model_instance.predict(img)[0]
+        class_index = np.argmax(prediction)
 
-    prediction = model_instance.predict(img)[0]
-    class_index = np.argmax(prediction)
+        return {
+            "tumor_type": CLASSES[class_index],
+            "confidence": float(prediction[class_index])
+        }
 
-    return {
-        "tumor_type": CLASSES[class_index],
-        "confidence": float(prediction[class_index])
-    }
+    except Exception as e:
+        print("ERROR:", e)
+        return {"status": "error", "message": str(e)}

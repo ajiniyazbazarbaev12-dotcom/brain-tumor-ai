@@ -7,7 +7,7 @@ model = None
 
 def build_mri_model():
     base_model = ResNet50(
-        weights=None,
+        weights="imagenet",
         include_top=False,
         input_shape=(224, 224, 3)
     )
@@ -21,6 +21,8 @@ def build_mri_model():
 
     model = Model(inputs=base_model.input, outputs=output)
     return model
+for layer in base_model.layers:
+    layer.trainable = False
 
 def get_model():
     global model

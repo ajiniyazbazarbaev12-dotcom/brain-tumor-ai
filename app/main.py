@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from app.models.download_models import download_models
 
 # ✅ DOWNLOAD FIRST (CRITICAL)
@@ -24,7 +26,21 @@ app.add_middleware(
 # create feedback folder
 FEEDBACK_DIR = "app/feedback"
 os.makedirs(FEEDBACK_DIR, exist_ok=True)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    download_models()
 
+    from app.services.brain_detector import get_model as get_mri
+    from app.services.tumor_predictor import get_model as get_tumor
+
+    print("Loading models at startup...")
+
+    get_mri()
+    get_tumor()
+
+    print("Models loaded successfully ✅")
+
+    yield
 # init DB
 init_db()
 
