@@ -29,8 +29,9 @@ function App() {
     try {
       const res = await predictTumor(file);
       setResult(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("FULL ERROR:", error);
+      console.error("RESPONSE:", error.response);
       alert("Error predicting");
     }
 
