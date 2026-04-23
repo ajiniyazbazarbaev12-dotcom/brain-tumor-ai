@@ -296,15 +296,15 @@ The MRI validation model helps prevent invalid uploads and improves reliability 
 
 ## Home Page
 
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/homepage.png)
 
 ## MRI Image Uploaded
 
-![Upload Preview](screenshots/upload.png)
+![Upload Preview](screenshots/upload_img.png)
 
 ## Prediction Result
 
-![Prediction Result](screenshots/prediction.png)
+![Prediction Result](screenshots/predict.png)
 
 
 # Deployment
