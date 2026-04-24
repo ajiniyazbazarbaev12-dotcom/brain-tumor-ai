@@ -317,3 +317,33 @@ https://brain-tumor-ai-2-ew2j.onrender.com/
 
 > Note: The application is hosted on Render free tier, so it is available upon the request.
 
+
+# Evaluation Metrics
+
+The tumor classification model was evaluated on the test dataset using standard multi-class classification metrics.
+
+## Overall Performance
+
+- **Accuracy:** 97%
+- **Macro Average F1-Score:** 96%
+- **Weighted Average F1-Score:** 97%
+
+## Class-wise Results
+
+| Class | Precision | Recall | F1-Score |
+|------|-----------|--------|---------|
+| Glioma | 0.99 | 0.88 | 0.94 |
+| Meningioma | 0.94 | 0.98 | 0.96 |
+| No Tumor | 0.96 | 1.00 | 0.98 |
+| Pituitary | 0.98 | 0.99 | 0.99 |
+
+## Notes
+
+The confusion matrix shows strong classification performance across all four tumor categories, with most predictions concentrated on the correct class labels.
+
+# Author
+
+Developed by **Ajiniyaz**
+
+GitHub: https://github.com/ajiniyaz-dev
+
